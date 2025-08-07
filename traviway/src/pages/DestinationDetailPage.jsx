@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import API from "../api/apiClient";
 import LoadingSpinner from "../components/LoadingSpinner";
+import FlightBookingForm from "../components/FlightBookingForm";
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyBjL5Z26m3nHkLPzeGwBNQRuUNGMqYmWVE";
+const Maps_API_KEY = "AIzaSyBjL5Z26m3nHkLPzeGwBNQRuUNGMqYmWVE";
 
 const DestinationDetailPage = () => {
   const { placeId } = useParams();
@@ -13,16 +14,15 @@ const DestinationDetailPage = () => {
   const [reviews, setReviews] = useState([]);
   const [localFoods, setLocalFoods] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showFlightForm, setShowFlightForm] = useState(false);
 
   useEffect(() => {
     const fetchDetails = async () => {
       try {
-        // Fetch place details
         const placeRes = await API.get(`/content/places/${placeId}`);
         const placeData = placeRes.data;
         setPlace(placeData);
 
-        // Fetch images for this place
         const imgsRes = await API.get(`/content/place-images/by-place/${placeId}`);
         const fetchedImages = (imgsRes.data || []).map((img) =>
           img.imageUrl.startsWith("http") || img.imageUrl.startsWith("/")
@@ -31,18 +31,16 @@ const DestinationDetailPage = () => {
         );
         setImages(fetchedImages);
 
-        // Fetch reviews
         const reviewsRes = await API.get(`/reviews/by-place/${placeId}`);
         setReviews(reviewsRes.data || []);
 
-        // Fetch local foods by the cityId from place data
         if (placeData.cityId) {
           try {
             const localFoodsRes = await API.get(`/content/local-foods/by-city/${placeData.cityId}`);
             setLocalFoods(localFoodsRes.data);
           } catch (foodErr) {
             console.error("Failed to fetch local foods:", foodErr);
-            setLocalFoods([]); // fallback to empty
+            setLocalFoods([]);
           }
         } else {
           setLocalFoods([]);
@@ -62,6 +60,7 @@ const DestinationDetailPage = () => {
     setCurrentImg((i) => (images.length ? (i === 0 ? images.length - 1 : i - 1) : 0));
   const handleNextImg = () =>
     setCurrentImg((i) => (images.length ? (i === images.length - 1 ? 0 : i + 1) : 0));
+  const handleBookFlightClick = () => setShowFlightForm(true);
 
   if (loading) return <LoadingSpinner />;
 
@@ -73,27 +72,26 @@ const DestinationDetailPage = () => {
     );
   }
 
+  const destinationCityId = place?.cityId;
+
   return (
     <div className="w-screen container mx-auto py-6 px-2 md:px-8">
       {/* IMAGE CAROUSEL */}
       <div
         className="relative mx-auto mb-8 rounded-lg overflow-hidden shadow"
-        style={{
-          maxWidth: "700px",        // makes carousel less wide
-          height: "280px",          // carousel height (adjust for your taste)
-        }}
+        style={{ maxWidth: "700px", height: "280px" }}
       >
         {images.length ? (
           <div
             className="flex items-center justify-center w-full h-full"
-            style={{ height: "260px" }} // or whatever your carousel height is
+            style={{ height: "260px" }}
           >
-          <img
-            src={images[currentImg]}
-            alt={place.title}
-            className="w-full h-full object-cover flex-shrink-0"
-            style={{ height: "300px" }} // images now fill the smaller height
-          />
+            <img
+              src={images[currentImg]}
+              alt={place.title}
+              className="w-full h-full object-cover flex-shrink-0"
+              style={{ height: "300px" }}
+            />
           </div>
         ) : (
           <div className="flex items-center justify-center w-full h-full bg-gray-200">
@@ -111,7 +109,7 @@ const DestinationDetailPage = () => {
               aria-label="Previous Image"
               style={{ fontSize: "1rem", minWidth: "20px", minHeight: "20px" }}
             >
-              &#60;
+              &lt;
             </button>
             <button
               onClick={(e) => {
@@ -122,14 +120,14 @@ const DestinationDetailPage = () => {
               aria-label="Next Image"
               style={{ fontSize: "1rem", minWidth: "20px", minHeight: "20px" }}
             >
-              &#62;
+              &gt;
             </button>
           </>
         )}
       </div>
 
-      {/* DESTINATION DETAILS SECTIONS */}
-      <div className=" bg-white rounded-lg shadow p-8 mb-6 border border-gray-200">
+      {/* DESTINATION DETAILS */}
+      <div className="bg-white rounded-lg shadow p-8 mb-6 border border-gray-200">
         <h1 className="text-4xl font-bold mb-4">{place.title}</h1>
 
         <section className="mb-6">
@@ -185,7 +183,7 @@ const DestinationDetailPage = () => {
           )}
         </section>
 
-        {/* PLACES TO STAY (optional) */}
+        {/* PLACES TO STAY */}
         {place.placesToStay && place.placesToStay.length > 0 && (
           <section className="mb-6">
             <h2 className="text-2xl font-semibold mb-2">Places To Stay</h2>
@@ -218,7 +216,7 @@ const DestinationDetailPage = () => {
           )}
         </section>
 
-        {/* MAP INTEGRATION */}
+        {/* MAP */}
         <section className="mb-6 flex flex-col items-center">
           <h2 className="text-2xl font-semibold mb-2 text-center">Map</h2>
           <div
@@ -234,8 +232,8 @@ const DestinationDetailPage = () => {
                 style={{ border: 0, minHeight: "260px", minWidth: "100%" }}
                 loading="lazy"
                 allowFullScreen
-                src={`https://www.google.com/maps/embed/v1/search?key=${GOOGLE_MAPS_API_KEY}&q=${place.latitude},${place.longitude}&zoom=12&maptype=roadmap`}
-              />
+                src={`https://www.google.com/maps/embed/v1/search?key=${Maps_API_KEY}&q=${place.latitude},${place.longitude}&zoom=12&maptype=roadmap`}
+              ></iframe>
             ) : (
               <div className="flex items-center justify-center w-full h-full bg-gray-200 text-gray-500 text-center text-sm">
                 Coordinates not available for map.
@@ -244,29 +242,37 @@ const DestinationDetailPage = () => {
           </div>
         </section>
 
-
         {/* BOOKING BUTTONS */}
         <section className="mt-8 flex flex-col md:flex-row gap-4 justify-center">
-          <Link
-          to={`https://www.irctc.co.in/nget/train-search`}>
-          <button className="bg-gradient-to-r from-gray-800 to-gray-900 text-white px-6 py-3 rounded font-bold hover:bg-blue-700 transition">
-            Book Train
-          </button>
+          <Link to="https://www.irctc.co.in/nget/train-search">
+            <button className="bg-gradient-to-r from-gray-800 to-gray-900 text-white px-6 py-3 rounded font-bold hover:bg-blue-700 transition">
+              Book Train
+            </button>
           </Link>
           <button className="bg-gradient-to-r from-gray-800 to-gray-900 text-white px-6 py-3 rounded font-bold hover:bg-blue-700 transition">
             Book Bus
           </button>
-          <button className="bg-gradient-to-r from-gray-800 to-gray-900 text-white px-6 py-3 rounded font-bold hover:bg-blue-700 transition">
+          <button
+            onClick={handleBookFlightClick}
+            className="bg-gradient-to-r from-gray-800 to-gray-900 text-white px-6 py-3 rounded font-bold hover:bg-blue-700 transition"
+          >
             Book Flight
           </button>
-          <Link
-          to={`https://www.booking.com/`}>
-          <button className="bg-gradient-to-r from-gray-800 to-gray-900 text-white px-6 py-3 rounded font-bold hover:bg-blue-700 transition">
-            Book Hotel
-          </button>
+          <Link to="https://www.booking.com/">
+            <button className="bg-gradient-to-r from-gray-800 to-gray-900 text-white px-6 py-3 rounded font-bold hover:bg-blue-700 transition">
+              Book Hotel
+            </button>
           </Link>
         </section>
       </div>
+
+      {/* FLIGHT BOOKING FORM */}
+      {showFlightForm && (
+        <FlightBookingForm
+          destinationCity={place.cityId}
+          onClose={() => setShowFlightForm(false)}
+        />
+      )}
 
       <div className="text-center mt-8">
         <Link
