@@ -40,11 +40,11 @@ const Navbar = () => {
   }, []);
 
   // Add top padding to body to avoid overlap by fixed navbar
-useEffect(() => {
-  const paddingClass = 'pt-20'; // 80px top padding to compensate for navbar fixed height
-  document.body.classList.add(paddingClass);
-  return () => document.body.classList.remove(paddingClass);
-}, []);
+  useEffect(() => {
+    const paddingClass = 'pt-20'; // 80px top padding to compensate for navbar fixed height
+    document.body.classList.add(paddingClass);
+    return () => document.body.classList.remove(paddingClass);
+  }, []);
 
   return (
     <nav className="bg-gradient-to-r from-gray-800 to-gray-900 shadow-xl fixed top-0 left-0 right-0 z-50">
@@ -113,21 +113,19 @@ useEffect(() => {
                 {user ? (
                   <>
                     <div className="px-4 py-2 text-green-600 font-semibold">
-                     <Link
-                    to="/dashboard"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block text-green-400 font-semibold mb-2"
-                  >
-                    {user.username}
-                  </Link>
+                      <Link
+                        to="/dashboard"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block text-green-400 font-semibold mb-2"
+                      >
+                        {user.username}
+                      </Link>
                     </div>
                     <button
                       onClick={handleLogout}
                       className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
                     >
-                      
                       Logout
-                      
                     </button>
                   </>
                 ) : (
@@ -215,7 +213,7 @@ useEffect(() => {
                       onClick={() => setUserDropdownOpen(false)}
                       className="block px-4 py-2 text-green-600 font-semibold hover:bg-gray-100"
                     >
-                    {user.username}
+                      {user.username}
                     </Link>
                   </div>
                   <button

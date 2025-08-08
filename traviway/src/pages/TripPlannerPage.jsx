@@ -24,17 +24,20 @@ Provide a day-by-day plan including activities, places to visit, and approximate
 Make it engaging and informative.`;
 
     try {
-      let chatHistory = [];
-      chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+      const chatHistory = [
+        { role: "user", parts: [{ text: prompt }] }
+      ];
       const payload = { contents: chatHistory };
 
-      // You must put your Gemini API key here
-      const apiKey = ""; 
+      // Your Gemini API key inserted directly (for testing only)
+      const apiKey = "AIzaSyDrWwynmQah32mlw_xnF4pwRfOssf3yzcc";
+
       if (!apiKey) {
-        setError("API Key is missing. Please provide your Gemini API key.");
+        setError("API Key is missing.");
         setLoading(false);
         return;
       }
+
       const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
       const response = await fetch(apiUrl, {
@@ -68,7 +71,7 @@ Make it engaging and informative.`;
 
   return (
     <div className="min-h-screen w-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center p-6">
-      <div className="bg-white p-8 rounded-lg shadow-2xl mb-8 border border-gray-200">
+      <div className="bg-white p-8 rounded-lg shadow-2xl mb-8 border border-gray-200 max-w-4xl w-full">
         <p className="text-4xl font-extrabold text-gray-800 mb-8 text-center mt-4">Plan Your Custom Trip with AI ✨</p>
         <p className="text-gray-700 text-lg mb-6 text-center">
           Tell our Gemini AI about your travel preferences, and we'll craft a unique itinerary just for you!
@@ -132,7 +135,7 @@ Make it engaging and informative.`;
       </div>
 
       {itinerary && (
-        <div className="bg-white p-8 rounded-lg shadow-2xl border border-gray-200 mt-8">
+        <div className="bg-white p-8 rounded-lg shadow-2xl border border-gray-200 mt-8 max-w-4xl w-full">
           <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Your Custom Itinerary</h2>
           <pre className="whitespace-pre-wrap font-sans text-gray-800 text-lg leading-relaxed bg-gray-50 p-6 rounded-lg border border-gray-100">
             {itinerary}
@@ -144,8 +147,3 @@ Make it engaging and informative.`;
 };
 
 export default TripPlannerPage;
-
-
-
-
-

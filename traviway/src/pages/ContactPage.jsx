@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import API from "../api/apiClient";
+
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -7,15 +9,34 @@ const ContactPage = () => {
     message: "",
   });
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitStatus("Thank you for reaching out! We will get back to you soon.");
-    setFormData({ name: "", email: "", message: "" });
+    setLoading(true);
+    setError(null);
+    setSubmitStatus(null);
+
+    try {
+      // API call to the notification-service via the API Gateway
+      const response = await API-.post('/notifications/contact', formData);
+      setSubmitStatus(response.data);
+      setFormData({ name: "", email: "", message: "" }); // Reset form
+    } catch (err) {
+      console.error("Failed to submit contact form:", err);
+      if (err.response && err.response.data) {
+        setError(err.response.data); // Display backend error message
+      } else {
+        setError("An unexpected error occurred. Please try again later.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -71,24 +92,26 @@ const ContactPage = () => {
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-gray-800 to-gray-900 text-white py-3 font-semibold rounded-md hover:bg-blue-700 transition"
+            className="w-full bg-gradient-to-r from-gray-800 to-gray-900 text-white py-3 font-semibold rounded-md hover:bg-blue-700 transition disabled:opacity-50"
+            disabled={loading}
           >
-            Send Message
+            {loading ? 'Sending...' : 'Send Message'}
           </button>
         </form>
 
         {submitStatus && (
           <p className="mt-6 text-center text-green-600 font-semibold">{submitStatus}</p>
         )}
+        {error && (
+          <p className="mt-6 text-center text-red-600 font-semibold">{error}</p>
+        )}
 
         <div className="mt-10 text-center text-gray-600">
-          <p><strong>Phone:</strong> +1 234 567 890</p>
-          <p><strong>Address:</strong> 123 Travel Road, Adventure City, Earth</p>
+          <p><strong>Phone:</strong> +91 8329979886</p>
+          <p><strong>Address:</strong>C-DAC Innovation Park, Sr. No. 34/B/1 Panchvati, Pashan, Pune - 411008</p>
         </div>
 
-        {/* Socials */}
         <div className="mt-8 flex justify-center gap-8">
-          {/* Instagram */}
           <a
             href="https://instagram.com/"
             target="_blank"
@@ -102,7 +125,6 @@ const ContactPage = () => {
               <circle cx="23" cy="9" r="1.5" fill="currentColor"/>
             </svg>
           </a>
-          {/* X (Twitter) */}
           <a
             href="https://twitter.com/"
             target="_blank"
@@ -115,7 +137,6 @@ const ContactPage = () => {
               <path d="M12 12l8 8M20 12l-8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
             </svg>
           </a>
-          {/* Facebook */}
           <a
             href="https://facebook.com/"
             target="_blank"

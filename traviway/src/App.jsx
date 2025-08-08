@@ -32,7 +32,6 @@ const style = `
 }
 `;
 
-
 const App = () => {
   return (
     <AuthProvider>
@@ -49,7 +48,7 @@ const App = () => {
             .font-inter {
               font-family: 'Inter', sans-serif;
             }
-          `}</style>
+            `}</style>
 
           <Navbar />
           <Routes>
