@@ -1,0 +1,29 @@
+spring.application.name=FlightBookingService
+server.port=8085
+
+# Eureka Client Configuration
+eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
+eureka.instance.prefer-ip-address=true
+
+# Amadeus API Configuration (Replace with your actual credentials)
+amadeus.api.key = J8dpwvOAgzifqrexxdOvZJegm1x7bF4Q
+amadeus.api.secret = ip8TlLlqgwDKKPU3
+
+
+#For supabase connection
+#spring.datasource.url=jdbc:postgresql://aws-0-ap-south-1.pooler.supabase.com:5432/postgres?user=postgres.bquvhcdgdqyxrtyaaprf&password=Traviway@69
+#
+#spring.datasource.username=postgres
+#spring.datasource.password=Traviway@69
+
+#For local db connection
+spring.datasource.url=jdbc:postgresql://localhost:5432/Traiway  
+spring.datasource.username=postgres
+spring.datasource.password=root
+
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# Optional: Hibernate settings
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="MavenProjectImportWizardPage">
+		<list key="rootDirectory">
+			<item value="E:\Travyway\Travyway"/>
+			<item value="E:\Travyway\FlightBookingService"/>
+			<item value="E:\Travyway\eureka-server"/>
+			<item value="E:\Travyway\ContentService"/>
+			<item value="E:\Travyway\ContactService"/>
+			<item value="E:\Travyway\authservice"/>
+			<item value="E:\Travyway\api-gateway"/>
+			<item value="C:\Users\Hardik\Desktop\Project\TraviwayFullProject\backend\ContactService"/>
+			<item value="C:\Users\Hardik\Desktop\Project\TraviwayFullProject\backend\Travyway"/>
+			<item value="C:\Users\Hardik\Desktop\Project\TraviwayFullProject\backend\eureka-server"/>
+			<item value="C:\Users\Hardik\Desktop\Project\TraviwayFullProject\backend\ContentService"/>
+			<item value="C:\Users\Hardik\Desktop\Project\TraviwayFullProject\backend\authservice"/>
+			<item value="C:\Users\Hardik\Desktop\Project\TraviwayFullProject\backend\api-gateway"/>
+			<item value="C:\Users\Hardik\Desktop\Project\TraviwayFullProject\backend\FlightBookingService"/>
+			<item value="C:\Users\Hardik\Desktop\Project\Travyway"/>
+		</list>
+		<list key="projectNameTemplate">
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+			<item value="[name]"/>
+		</list>
+	</section>
+	<section name="org.eclipse.m2e.core.pom.overview">
+	</section>
+	<section name="org.eclipse.m2e.core.pom.dependencies">
+	</section>
+</section>

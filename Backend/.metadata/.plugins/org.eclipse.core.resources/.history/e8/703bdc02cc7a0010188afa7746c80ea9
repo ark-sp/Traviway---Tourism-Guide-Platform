@@ -1,0 +1,40 @@
+server.port=8083
+
+spring.application.name=authservice
+
+#For supabase connection
+#spring.datasource.url=jdbc:postgresql://aws-0-ap-south-1.pooler.supabase.com:5432/postgres?user=postgres.bquvhcdgdqyxrtyaaprf&password=Traviway@69
+#
+#spring.datasource.username=postgres
+#spring.datasource.password=Traviway@69
+
+#For local db connection
+spring.datasource.url=jdbc:postgresql://postgres:5432/Traiway
+spring.datasource.username=postgres
+spring.datasource.password=root
+
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# Optional: Hibernate settings
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+# Eureka Client Configuration
+eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
+#eureka.client.instance.hostname=localhost
+eureka.instance.prefer-ip-address=true
+
+# JWT Secret Key (must be at least 256 bits/32 characters)
+jwt.secret=gxB3gN3eWn85Wq2rWOkarF8mzG1lA15wQfZDyB8yBqg=
+
+
+# SMTP Email configuration example (using Gmail SMTP for example)
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=omkarthorat1042@gmail.com
+spring.mail.password=rwan lrxg uoeq jeuh
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.starttls.required=true
+logging.level.org.springframework.mail=DEBUG
