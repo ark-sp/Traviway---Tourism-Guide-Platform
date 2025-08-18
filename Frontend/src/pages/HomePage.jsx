@@ -1,0 +1,187 @@
+import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import Carousel from "../components/Carousel";
+import LoadingSpinner from "../components/LoadingSpinner";
+import ErrorMessage from "../components/ErrorMessage";
+import SearchBar from "../components/SearchBar";
+import API from "../api/apiClient";
+
+const HomePage = () => {
+  const { user } = useAuth();
+  const [featuredCities, setFeaturedCities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showGreeting, setShowGreeting] = useState(true);
+
+  // New state for blogs
+  const [blogs, setBlogs] = useState([]);
+  const [blogsLoading, setBlogsLoading] = useState(true);
+  const [blogsError, setBlogsError] = useState(null);
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const response = await API.get("/content/cities");
+        setFeaturedCities(response.data.slice(0, 3));
+      } catch (err) {
+        setError(
+          "Failed to fetch featured cities. Please ensure all backend services and the API Gateway are running."
+        );
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCities();
+
+    // Fetch latest 4 blogs for travel stories
+    const fetchBlogs = async () => {
+      try {
+        const response = await API.get("/travyway/blogs");
+        // Take latest 4 blogs (assuming API returns in chronological order, reverse or slice as needed)
+        const latestBlogs = response.data.slice(-4).reverse();
+        setBlogs(latestBlogs);
+      } catch (err) {
+        setBlogsError("Failed to load travel stories.");
+        console.error(err);
+      } finally {
+        setBlogsLoading(false);
+      }
+    };
+    fetchBlogs();
+
+    const timer = setTimeout(() => setShowGreeting(false), 5000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  let greetingMessage = "";
+  let greetingClass = "";
+
+  if (user) {
+    if (user.isNewUser) {
+      greetingMessage = `🎉 Welcome to Traviway, ${user.username}! Your adventure begins now!`;
+      greetingClass = "bg-purple-50 border border-purple-200 text-purple-700";
+    } else {
+      greetingMessage = `👋 Welcome back, ${user.username}! Ready to plan your next adventure?`;
+      greetingClass = "bg-green-50 border border-green-200 text-green-700";
+    }
+  }
+
+  return (
+    <div className="w-screen mx-auto p-6">
+      {user && showGreeting && (
+        <div
+          className={`p-4 rounded mb-6 shadow-sm text-center transform transition-all duration-500 ${greetingClass}`}
+        >
+          <span className="font-semibold">{greetingMessage}</span>
+        </div>
+      )}
+
+      <div className="text-2xl font-bold text-center text-gray-800 mb-8 mt-4">
+        Explore India like never before!
+      </div>
+
+      <Carousel />
+
+      {/* Here is the integrated SearchBar */}
+      <SearchBar />
+
+      <section className="mb-12">
+        <h2 className="text-4xl font-bold text-gray-800 mb-8 text-center">
+          Featured Destinations
+        </h2>
+        {loading ? (
+          <LoadingSpinner />
+        ) : error ? (
+          <ErrorMessage message={error} />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {featuredCities.map((city) => (
+              <div
+                key={city.cityId}
+                className="bg-white rounded-lg shadow-xl overflow-hidden transform hover:scale-105 transition-transform duration-300 border border-gray-200"
+              >
+                <img
+                  src={`/images/${city.cityImage}`}
+                  alt={city.cityName}
+                  className="w-full h-56 object-cover"
+                />
+                <div className="p-6">
+                  <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                    {city.cityName}
+                  </h3>
+                  <p className="text-gray-600 mb-4 line-clamp-3">
+                    A vibrant city with a rich history and culture.
+                  </p>
+                  <div className="flex justify-center">
+                    <a
+                      href={`/#/destinations/${city.cityId}`}
+                      className="inline-block bg-gradient-to-r from-gray-800 to-gray-900 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors font-medium"
+                    >
+                      Explore More
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="mb-12 bg-purple-100 p-8 rounded-lg shadow-2xl text-center border border-purple-200">
+        <h2 className="text-4xl font-bold text-purple-800 mb-6">
+          Let AI Plan Your Perfect Trip!
+        </h2>
+        <p className="text-gray-700 text-lg mb-8">
+          Tell us your preferences and get a custom itinerary generated by Gemini
+          AI.
+        </p>
+        <a
+          href="/#/plan-trip"
+          className="inline-block bg-gradient-to-r from-gray-800 to-gray-900 text-white px-8 py-4 rounded-full shadow-lg hover:bg-purple-700 transition-colors font-semibold text-xl transform hover:scale-105"
+        >
+          Plan Your Trip Now ✨
+        </a>
+      </section>
+
+      <section className="mb-12 bg-blue-50 p-8 rounded-lg shadow-inner">
+        <h2 className="text-4xl font-bold text-gray-800 mb-8 text-center">
+          Latest Travel Stories
+        </h2>
+
+        {blogsLoading ? (
+          <LoadingSpinner />
+        ) : blogsError ? (
+          <ErrorMessage message={blogsError} />
+        ) : blogs.length === 0 ? (
+          <p className="text-center text-gray-600">No travel stories found.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {blogs.map((blog) => (
+              <div
+                key={blog.blogId}
+                className="bg-white rounded-lg shadow-md overflow-hidden p-6 border border-gray-100"
+              >
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                  {blog.title}
+                </h3>
+                <p className="text-gray-600 mb-4 line-clamp-3">
+                  {blog.content.length > 150 ? blog.content.slice(0, 150) + "..." : blog.content}
+                </p>
+                {/* Link to blog details page. Adjust route if needed */}
+                <a
+                  href={`/#/blogs/${blog.blogId}`}
+                  className="text-blue-600 hover:underline"
+                >
+                  Read More
+                </a>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+    </div>
+  );
+};
+
+export default HomePage;

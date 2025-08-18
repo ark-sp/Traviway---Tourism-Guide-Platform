@@ -1,0 +1,27 @@
+spring.application.name=ContentService
+#For supabase connection
+#spring.datasource.url=jdbc:postgresql://aws-0-ap-south-1.pooler.supabase.com:5432/postgres?user=postgres.bquvhcdgdqyxrtyaaprf&password=Traviway@69
+#
+#spring.datasource.username=postgres
+#spring.datasource.password=Traviway@69
+
+#For local db connection
+spring.datasource.url=jdbc:postgresql://localhost:5432/Traiway  
+spring.datasource.username=postgres
+spring.datasource.password=root
+
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# Optional: Hibernate settings
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+
+
+server.port=8081
+
+# Eureka Client Configuration
+eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
+eureka.instance.prefer-ip-address=true
+#eureka.client.transport.name=jersey3
